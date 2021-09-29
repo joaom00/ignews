@@ -1,6 +1,8 @@
-import Head from "next/head";
+import { GetStaticProps } from 'next'
+import Head from 'next/head'
+import { stripe } from '../services/stripe'
 
-import styles from "../styles/home.module.scss";
+import styles from '../styles/home.module.scss'
 
 export default function Home() {
   return (
@@ -24,5 +26,24 @@ export default function Home() {
         <img src="/images/avatar.svg" alt="Girl coding" />
       </main>
     </>
-  );
+  )
+}
+
+export const getStaticProps: GetStaticProps = async () => {
+  const price = await stripe.prices.retrieve('prod_KIv7VYDqOHhBbB')
+
+  const product = {
+    priceId: price.id,
+    amount: new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+    }).format(price.unit_amount / 100),
+  }
+
+  return {
+    props: {
+      product,
+    },
+    revalidate: 60 * 60 * 24, // 24 hours
+  }
 }
