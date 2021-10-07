@@ -1,5 +1,6 @@
 import { GetStaticProps } from 'next'
 import Head from 'next/head'
+import { SubscribeButton } from '../components/SubscribeButton'
 import { stripe } from '../services/stripe'
 
 import styles from '../styles/home.module.scss'
@@ -21,6 +22,8 @@ export default function Home() {
             Get access to all the publications <br />
             <span>for $9.90 month</span>
           </p>
+
+          <SubscribeButton />
         </section>
 
         <img src="/images/avatar.svg" alt="Girl coding" />
@@ -36,14 +39,14 @@ export const getStaticProps: GetStaticProps = async () => {
     priceId: price.id,
     amount: new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: 'USD',
-    }).format(price.unit_amount / 100),
+      currency: 'USD'
+    }).format(price.unit_amount / 100)
   }
 
   return {
     props: {
-      product,
+      product
     },
-    revalidate: 60 * 60 * 24, // 24 hours
+    revalidate: 60 * 60 * 24 // 24 hours
   }
 }
